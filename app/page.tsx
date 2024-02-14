@@ -147,7 +147,8 @@ export default function Page() {
         handleActiveElement={handleActiveElement}         
       />
       <section className="flex h-full flex-row">
-        <LeftSidebar />
+        {/* Camera Objects are not Array, it is a Map type. So type conversion is needed */}
+        <LeftSidebar allShapes={Array.from(canvasObjects)} />
         <Live canvasRef={canvasRef} />
         <RightSidebar />
       </section>
