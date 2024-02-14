@@ -6,8 +6,8 @@ import Live from "@/components/Live";
 import Navbar from "@/components/Navbar";
 import RightSidebar from "@/components/RightSidebar";
 import { useEffect, useRef, useState } from "react";
-import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
-import { ActiveElement } from "@/types/type";
+import { handleCanvasMouseDown, handleCanvasMouseUp, handleCanvasObjectModified, handleCanvasObjectScaling, handleCanvasSelectionCreated, handleCanvaseMouseMove, handleResize, initializeFabric, renderCanvas } from "@/lib/canvas";
+import { ActiveElement, Attributes } from "@/types/type";
 import { useMutation, useRedo, useStorage, useUndo } from "@/liveblocks.config";
 import { defaultNavElement } from "@/constants";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
@@ -25,8 +25,20 @@ export default function Page() {
   const activeObjectRef = useRef<fabric.Object | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
+  const isEditingRef = useRef(false);
+
   // Canvas Objects live storage provided by Liveblocks
   const canvasObjects = useStorage((root)=>root.canvasObjects)
+
+  const [elementAttributes, setElementAttributes] = useState<Attributes>({
+    width: '',
+    height: '',
+    fontSize: '',
+    fontFamily: '',
+    fontWeight: '',
+    fill: '#aabbcc',
+    stroke: '#aabbcc',
+  })
 
   // Sync shape live storage provided by Liveblocks
   const syncShapeInStorage = useMutation(({ storage },object)=>{
@@ -135,6 +147,21 @@ export default function Page() {
       })
     });
 
+    canvas.on("selection:created",(options: any)=>{
+      handleCanvasSelectionCreated({
+        options,
+        isEditingRef,
+        setElementAttributes,
+      })
+    } )
+
+    canvas.on("object:scaling", (options: any) => {
+      handleCanvasObjectScaling({
+        options,
+        setElementAttributes
+      })
+    });
+
     window.addEventListener("resize", () => {
       handleResize({ fabricRef });
     });
@@ -184,7 +211,14 @@ export default function Page() {
         {/* Camera Objects are not Array, it is a Map type. So type conversion is needed */}
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
         <Live canvasRef={canvasRef} />
-        <RightSidebar />
+        <RightSidebar
+          elementAttributes={elementAttributes}
+          setElementAttributes={setElementAttributes}
+          fabricRef={fabricRef}
+          isEditingRef={isEditingRef}
+          activeObjectRef={activeObjectRef}
+          syncShapeInStorage={syncShapeInStorage}
+        />
       </section>
     </main>
   );
