@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import LiveCursors from "./cursor/LiveCursors";
-import { useBroadcastEvent, useEventListener, useMyPresence, useOthers } from "@/liveblocks.config";
+import { useBroadcastEvent, useEventListener, useMyPresence } from "@/liveblocks.config";
 import CursorChat from "./cursor/CursorChat";
 import { CursorMode, CursorState, Reaction, ReactionEvent } from "@/types/type";
 import ReactionSelector from "./reaction/ReactionButton";
@@ -24,8 +24,8 @@ type Props = {
 }
 
 const Live = ({ canvasRef,undo, redo }: Props) => {
-  const others = useOthers(); //Returns All the other users connected to the same Room
-  const [{ cursor }, updateMyPresence] = useMyPresence() as any; //Returns the current user's presence
+   //Returns All the other users connected to the same Room
+  const [{ cursor }, updateMyPresence] = useMyPresence(); //Returns the current user's presence
 
   const [cursorState, setCursorState] = useState<CursorState>({
     mode: CursorMode.Hidden,
@@ -195,7 +195,7 @@ const Live = ({ canvasRef,undo, redo }: Props) => {
           setReaction={setReactions}
         />
       )}
-      <LiveCursors others={others} />
+      <LiveCursors />
 
       <Comments />
     </ContextMenuTrigger>
