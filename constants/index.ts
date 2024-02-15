@@ -184,12 +184,13 @@ export const shortcuts = [
   {
     key: "2",
     name: "Undo",
-    shortcut: "⌘ + Z",
+    shortcut: "Ctrl + Z",
   },
   {
     key: "3",
     name: "Redo",
-    shortcut: "⌘ + Y",
+    // shortcut: "⌘ + Y",
+    shortcut: "Ctrl + Y",
   },
   {
     key: "4",

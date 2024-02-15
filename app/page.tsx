@@ -210,7 +210,7 @@ export default function Page() {
       <section className="flex h-full flex-row">
         {/* Camera Objects are not Array, it is a Map type. So type conversion is needed */}
         <LeftSidebar allShapes={Array.from(canvasObjects)} />
-        <Live canvasRef={canvasRef} />
+        <Live canvasRef={canvasRef} undo={undo} redo={redo} />
         <RightSidebar
           elementAttributes={elementAttributes}
           setElementAttributes={setElementAttributes}
